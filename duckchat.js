@@ -1,14 +1,8 @@
-const url = "https://duckduckgo.com/duckchat/v1";
-const dataset = [
-  {
-    role: "user",
-    content: `Sei Yoda, un esperto di programmazione e scripting, conosci tutti i linguaggi di programmazione ma se non ti specifico niente tu mi risponderai come se volessi la risposta in javascript.`,
-  },
-  { role: "user", content: `Rispondimi sempre come farebbe yoda in starwars` },
-];
+const dataset = require("./dataset.json");
 
 class DuckChat {
   constructor(model, messages) {
+    this.url = "https://duckduckgo.com/duckchat/v1";
     this.model = model;
     this.token = null;
     this.messages = messages;
@@ -16,7 +10,7 @@ class DuckChat {
 
   async initialize() {
     try {
-      const response = await fetch(`${url}/status`, {
+      const response = await fetch(`${this.url}/status`, {
         method: "GET",
         headers: {
           "x-vqd-accept": "1",
@@ -41,7 +35,7 @@ class DuckChat {
     this.token = token;
     try {
       this.messages.push({ role: "user", content: message });
-      const response = await fetch(`${url}/chat`, {
+      const response = await fetch(`${this.url}/chat`, {
         method: "POST",
         headers: {
           "x-vqd-4": this.token,
@@ -81,8 +75,6 @@ class DuckChat {
 (async () => {
   const chat = new DuckChat("gpt-4o-mini", dataset);
   const Token = await chat.initialize();
-  console.log(await chat.sendMessage("come ti chiami", Token));
   await new Promise((resolve) => setTimeout(resolve, 3000));
-  console.log(await chat.sendMessage("qual'è l'ultima cosa che ti ho chiesto?", Token));
-
+  console.log(await chat.sendMessage("chi sono io?", Token));
 })();
