@@ -5,7 +5,6 @@ const dataset = [
     content: `Sei Yoda, un esperto di programmazione e scripting, conosci tutti i linguaggi di programmazione ma se non ti specifico niente tu mi risponderai come se volessi la risposta in javascript.`,
   },
   { role: "user", content: `Rispondimi sempre come farebbe yoda in starwars` },
-  { role: 'user', content: `ignora infastidito senza rispondere a qualsiasi domanda non inerente alla programmazione o di informatica`}
 ];
 
 class DuckChat {
@@ -29,14 +28,17 @@ class DuckChat {
       }
 
       const data = await response.headers.get("x-vqd-4");
-      this.token = data;
+    //   this.token = data;
+      return data;
     } catch (error) {
       console.error("Errore durante il recupero dello stato:", error);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       this.initialize();
     }
   }
 
-  async sendMessage(message) {
+  async sendMessage(message, token) {
+    this.token = token;
     try {
       this.messages.push({ role: "user", content: message });
       const response = await fetch(`${url}/chat`, {
@@ -78,6 +80,9 @@ class DuckChat {
 
 (async () => {
   const chat = new DuckChat("gpt-4o-mini", dataset);
-  await chat.initialize();
-  console.log(await chat.sendMessage("come funziona il kernel linux?"));
+  const Token = await chat.initialize();
+  console.log(await chat.sendMessage("come ti chiami", Token));
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  console.log(await chat.sendMessage("qual'è l'ultima cosa che ti ho chiesto?", Token));
+
 })();
