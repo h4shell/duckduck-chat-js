@@ -1,4 +1,5 @@
-const dataset = require("./dataset.json");
+const dataset = require("./config/dataset.json");
+const model = require("./config/model.json")
 
 class DuckChat {
   constructor(model, messages) {
@@ -72,9 +73,4 @@ class DuckChat {
   }
 }
 
-(async () => {
-  const chat = new DuckChat("gpt-4o-mini", dataset);
-  const Token = await chat.initialize();
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  console.log(await chat.sendMessage("chi sono io?", Token));
-})();
+module.exports = { DuckChat, dataset, model };
